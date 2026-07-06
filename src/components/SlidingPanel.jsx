@@ -1,5 +1,5 @@
 import { useState, useEffect } from "preact/hooks";
-import { useWidget } from "./useWidget";
+import { useWidget } from "../hooks/useWidget";
 import { ToggleChatButton } from "./ToggleChatButton";
 
 // Right-side chat drawer + floating launcher. Ported from legacy GravitySAB.
@@ -22,6 +22,17 @@ export function SlidingPanel({ children, width = "70vw" }) {
     return () => clearTimeout(t);
   }, [isOpen]);
 
+  // The APP owns the close control now (its own top-right X) — it posts `unoverse:close`,
+  // and the host just slides the drawer shut. No host-drawn X, so it never clashes with the
+  // app's focus-mode X (both X's are the app's, and the focus overlay covers the chat X).
+  useEffect(() => {
+    const onMessage = (e) => {
+      if (e.data?.type === "unoverse:close") close();
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [close]);
+
   return (
     <div className="h-full">
       {/* Sliding panel */}
@@ -31,27 +42,6 @@ export function SlidingPanel({ children, width = "70vw" }) {
         }`}
         style={{ width }}
       >
-        {/* Close button */}
-        <button
-          onClick={close}
-          aria-label="Close chat"
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            className="h-6 w-6 text-gray-600"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
-
         {/* Content — unmounted once the drawer is fully closed so the chat
             session (connection, stream) ends gracefully. */}
         <div className="h-full overflow-y-auto">{isMounted ? children : null}</div>

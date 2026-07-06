@@ -1,7 +1,7 @@
 import { render } from "preact";
 import { AuthProvider } from "react-oidc-context";
-import { App } from "./App";
-import { oidcConfig, hasAuth } from "./auth";
+import { App } from "./components/App";
+import { oidcConfig, hasAuth } from "./lib/auth";
 import "./index.css";
 
 // The widget is a CHANNEL: it owns auth. When OIDC env vars are set we wrap in

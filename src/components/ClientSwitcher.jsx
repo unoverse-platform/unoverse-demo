@@ -1,4 +1,4 @@
-import { clients } from "./config";
+import { clients } from "../lib/config";
 
 // Tiny fixed client picker (top-left) — swaps the whole demo skin in one move:
 // the template the app loads AND the fake host page behind the drawer.

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { getAccessToken } from "./auth";
+import { getAccessToken } from "../lib/auth";
 
 // The app UI resource served by the MCP server (§6d).
 const APP_URI = "ui://unoverse/app.html";
@@ -32,7 +32,7 @@ async function readAppHtml(serverUrl) {
   }
 }
 
-export function AppHost({ serverUrl, apiUrl, templateId, token, userId, conversationId }) {
+export function AppHost({ serverUrl, apiUrl, templateId, token, userId, conversationId, onSize }) {
   const ref = useRef(null);
   const [html, setHtml] = useState(null);
   const [error, setError] = useState(null);
@@ -56,6 +56,17 @@ export function AppHost({ serverUrl, apiUrl, templateId, token, userId, conversa
     ref.current?.contentWindow?.postMessage({ type: "unoverse:config", config: appConfig }, "*");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverUrl, templateId, token, userId, conversationId]);
+
+  // The APP owns its width (manifest `width`) — it posts `unoverse:size` up; we hand it to the
+  // panel so the slide-out sizes to the app. Only accept it from THIS iframe's window.
+  useEffect(() => {
+    const onMessage = (e) => {
+      if (e.source !== ref.current?.contentWindow) return;
+      if (e.data?.type === "unoverse:size" && e.data.width) onSize?.(e.data.width);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [onSize]);
 
   if (error) return <div className="flex h-full items-center justify-center p-4 text-center text-sm text-red-400">app failed to load: {error}</div>;
   if (!html) return <div className="flex h-full items-center justify-center text-sm text-gray-400">Loading app…</div>;

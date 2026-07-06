@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { useAuth } from "react-oidc-context";
-import { config, clients, getClientKey } from "./config";
-import { hasAuth, getAccessToken, setAccessTokenFn } from "./auth";
+import { config, clients, getClientKey } from "../lib/config";
+import { hasAuth, getAccessToken, setAccessTokenFn } from "../lib/auth";
 import { LoginScreen } from "./LoginScreen";
 import { SlidingPanel } from "./SlidingPanel";
 import { ClientSwitcher } from "./ClientSwitcher";
-import { getConversationId } from "./session";
-import { AppHost } from "./appHost";
+import { getConversationId } from "../lib/session";
+import { AppHost } from "./AppHost";
 
 /**
  * The SAB shell. Today it owns the CHANNEL concerns — auth/OIDC, the login gate, the session
@@ -39,12 +39,17 @@ export function App() {
   // tree, so we swap its src directly; absent on a real embed → guard.
   const [clientKey, setClientKey] = useState(getClientKey);
   const client = clients[clientKey];
+  // The APP owns its panel width (manifest `width`) and posts it up via AppHost; the panel just
+  // reacts. Undefined → SlidingPanel's own default until the app reports. Reset on switch so the
+  // incoming app's width applies fresh.
+  const [panelWidth, setPanelWidth] = useState(undefined);
   useEffect(() => {
     const url = new URL(window.location.href);
     url.searchParams.set("client", clientKey);
     window.history.replaceState({}, "", url);
     const img = document.querySelector(".bg-container img");
     if (img) img.src = client.background;
+    setPanelWidth(undefined);
   }, [clientKey]);
 
   // Login gate — ask the server whether it enforces auth (/health → authRequired).
@@ -94,6 +99,7 @@ export function App() {
         token={auth?.user?.access_token}
         userId={userId}
         conversationId={conversationId}
+        onSize={setPanelWidth}
       />
     );
   }
@@ -101,7 +107,7 @@ export function App() {
   return (
     <>
       <ClientSwitcher value={clientKey} onChange={setClientKey} />
-      <SlidingPanel>{content}</SlidingPanel>
+      <SlidingPanel width={panelWidth}>{content}</SlidingPanel>
     </>
   );
 }
