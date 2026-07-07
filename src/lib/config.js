@@ -20,25 +20,34 @@ export const config = {
 };
 
 // Demo client registry — each entry is one CHANNEL skin: which template the app loads
-// and which "fake page" screenshot sits behind the drawer. Routed via `?client=<key>`
-// (query param, not a path — works embedded AND statically hosted, no SPA fallback).
-// Template ids resolve case-insensitively across orgs on the server, so a bare name
-// like "BPPChatLayout" finds `bpp/bppchatlayout`.
+// and which "fake page" screenshot sits behind the drawer. Each client is its own PATH
+// route (`/sab`, `/bpp`) so the URL alone opens that channel's chat — no launcher, no
+// query param. The Unoverse landing page (`/`) links out to each. Template ids resolve
+// case-insensitively across orgs on the server, so a bare name like "BPPChatLayout"
+// finds `bpp/bppchatlayout`.
 export const clients = {
   sab: {
     label: "SAB",
+    tagline: "Consumer banking channel",
     templateId: config.templateId,
     background: "https://res.cloudinary.com/sonik/image/upload/v1768405848/gravity/sab.png",
   },
   bpp: {
     label: "BPP",
+    tagline: "Enterprise portal channel",
     templateId: "BPPChatLayout",
     background: "https://res.cloudinary.com/sonik/image/upload/v1783256770/bppWeb_c9bila.png",
   },
 };
 
-/** The client selected by the `?client=` route; unknown/absent → sab. */
-export function getClientKey() {
-  const k = new URLSearchParams(window.location.search).get("client")?.toLowerCase();
-  return k && clients[k] ? k : "sab";
+/**
+ * The client selected by the URL PATH (`/sab`, `/bpp`) → its key; anything else
+ * (root `/`, unknown) → null, which the app renders as the Unoverse landing page.
+ * Falls back to the legacy `?client=` query param so old demo links keep working.
+ */
+export function getRoute() {
+  const seg = window.location.pathname.replace(/^\/+|\/+$/g, "").toLowerCase();
+  if (clients[seg]) return seg;
+  const q = new URLSearchParams(window.location.search).get("client")?.toLowerCase();
+  return q && clients[q] ? q : null;
 }

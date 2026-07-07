@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3007 --no-open",
     "build": "vite build",
+    "build:widget": "BUILD_TARGET=widget vite build",
     "preview": "vite preview"
   },
   "dependencies": {

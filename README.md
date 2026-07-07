@@ -25,16 +25,17 @@ Files:
 - `src/main.jsx` — self-mounting widget (`#unoverse-demo`); the SDK isolates in a Shadow DOM.
 - `src/config.js` — `VITE_*` env (`serverUrl`, `apiUrl`, `appId`) + the demo client registry.
 
-## Demo clients (`?client=`)
+## Demo routes
 
-The shell can skin itself per client: the template the app loads and the fake host-page
-screenshot behind the drawer. Clients are registered in `src/config.js` (`clients`) and
-routed via a query param — `?client=sab` (default) or `?client=bpp` — so a demo link can
-deep-link a client. The small dropdown (top-left) switches live: it swaps the background,
-updates the URL, and remounts the app iframe with the new template.
+The root path `/` is the Unoverse landing page. Each demo client is its own path route —
+`/sab` and `/bpp` — that opens straight into that channel's chat (the route IS the launcher,
+so there's no toggle button). A route skins the shell per client: the template the app loads
+and the fake host-page screenshot behind the drawer. Clients are registered in
+`src/lib/config.js` (`clients`); the `/` home pill (top-left of a demo) links back to the
+landing page. Legacy `?client=sab|bpp` links still resolve.
 
 > The client has **zero** workflow knowledge — no binding renders until the app
-> manifest provides one. Swap `VITE_APP_ID`, get a different app.
+> manifest provides one.
 
 ## Develop
 

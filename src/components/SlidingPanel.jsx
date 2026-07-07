@@ -1,17 +1,22 @@
 import { useState, useEffect } from "preact/hooks";
 import { useWidget } from "../hooks/useWidget";
-import { ToggleChatButton } from "./ToggleChatButton";
 
-// Right-side chat drawer + floating launcher. Ported from legacy GravitySAB.
+// Right-side chat drawer. Ported from legacy GravitySAB, minus the floating launcher.
 //
-// The chat lives in a panel that slides in over a static "fake" page. When the
-// drawer closes we wait for the slide-out transition to finish, THEN unmount the
-// children — so the Unoverse SDK tears down its WebSocket/stream gracefully
-// rather than mid-animation.
-export function SlidingPanel({ children, width = "70vw" }) {
+// The route IS the launcher now (`/sab`, `/bpp`), so the drawer AUTO-OPENS on mount and
+// slides in over the static "fake" page. When it closes we wait for the slide-out
+// transition to finish, THEN unmount the children — so the Unoverse SDK tears down its
+// WebSocket/stream gracefully rather than mid-animation — and hand control back to the
+// host via `onClose` (which returns to the landing page).
+export function SlidingPanel({ children, width = "70vw", onClose }) {
   const { isOpen, open, close } = useWidget();
 
-  const [isMounted, setIsMounted] = useState(isOpen);
+  // The URL opened this channel — so slide in as soon as we mount.
+  useEffect(() => {
+    open();
+  }, [open]);
+
+  const [isMounted, setIsMounted] = useState(true);
   useEffect(() => {
     if (isOpen) {
       setIsMounted(true);
@@ -22,16 +27,19 @@ export function SlidingPanel({ children, width = "70vw" }) {
     return () => clearTimeout(t);
   }, [isOpen]);
 
-  // The APP owns the close control now (its own top-right X) — it posts `unoverse:close`,
-  // and the host just slides the drawer shut. No host-drawn X, so it never clashes with the
-  // app's focus-mode X (both X's are the app's, and the focus overlay covers the chat X).
+  // The APP owns the close control (its own top-right X) — it posts `unoverse:close`, and the
+  // host slides the drawer shut, then returns to the landing page. No host-drawn X, so it never
+  // clashes with the app's focus-mode X.
   useEffect(() => {
     const onMessage = (e) => {
-      if (e.data?.type === "unoverse:close") close();
+      if (e.data?.type === "unoverse:close") {
+        close();
+        onClose?.();
+      }
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [close]);
+  }, [close, onClose]);
 
   return (
     <div className="h-full">
@@ -46,9 +54,6 @@ export function SlidingPanel({ children, width = "70vw" }) {
             session (connection, stream) ends gracefully. */}
         <div className="h-full overflow-y-auto">{isMounted ? children : null}</div>
       </div>
-
-      {/* Launcher (shown when the drawer is closed) */}
-      {!isOpen && <ToggleChatButton onClick={open} />}
     </div>
   );
 }

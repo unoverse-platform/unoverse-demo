@@ -45,8 +45,11 @@
     </style>
   </head>
   <body>
+    <!-- The fake host page behind the drawer. Left empty on purpose: the landing page (`/`)
+         shows nothing here, and each channel route (`/sab`, `/bpp`) sets this src to its own
+         screenshot. In production this whole file is replaced by the real host page. -->
     <div class="bg-container">
-      <img src="https://res.cloudinary.com/sonik/image/upload/v1768405848/gravity/sab.png" alt="Client background" />
+      <img alt="Client background" />
     </div>
 
     <!-- Pre-created host so the self-mounting widget renders into this overlay
