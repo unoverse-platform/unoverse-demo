@@ -1,22 +1,17 @@
 import { useState, useEffect } from "preact/hooks";
 import { useWidget } from "../hooks/useWidget";
+import { ToggleChatButton } from "./ToggleChatButton";
 
-// Right-side chat drawer. Ported from legacy GravitySAB, minus the floating launcher.
+// Right-side chat drawer + floating launcher. Ported from legacy GravitySAB.
 //
-// The route IS the launcher now (`/sab`, `/bpp`), so the drawer AUTO-OPENS on mount and
-// slides in over the static "fake" page. When it closes we wait for the slide-out
+// The drawer starts CLOSED over the static "fake" page — the floating launcher is the only
+// thing visible until the user opens it. When the drawer closes we wait for the slide-out
 // transition to finish, THEN unmount the children — so the Unoverse SDK tears down its
-// WebSocket/stream gracefully rather than mid-animation — and hand control back to the
-// host via `onClose` (which returns to the landing page).
-export function SlidingPanel({ children, width = "70vw", onClose }) {
+// WebSocket/stream gracefully rather than mid-animation.
+export function SlidingPanel({ children, width = "70vw" }) {
   const { isOpen, open, close } = useWidget();
 
-  // The URL opened this channel — so slide in as soon as we mount.
-  useEffect(() => {
-    open();
-  }, [open]);
-
-  const [isMounted, setIsMounted] = useState(true);
+  const [isMounted, setIsMounted] = useState(isOpen);
   useEffect(() => {
     if (isOpen) {
       setIsMounted(true);
@@ -28,18 +23,15 @@ export function SlidingPanel({ children, width = "70vw", onClose }) {
   }, [isOpen]);
 
   // The APP owns the close control (its own top-right X) — it posts `unoverse:close`, and the
-  // host slides the drawer shut, then returns to the landing page. No host-drawn X, so it never
-  // clashes with the app's focus-mode X.
+  // host slides the drawer shut (the launcher reappears). No host-drawn X, so it never clashes
+  // with the app's focus-mode X.
   useEffect(() => {
     const onMessage = (e) => {
-      if (e.data?.type === "unoverse:close") {
-        close();
-        onClose?.();
-      }
+      if (e.data?.type === "unoverse:close") close();
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [close, onClose]);
+  }, [close]);
 
   return (
     <div className="h-full">
@@ -54,6 +46,9 @@ export function SlidingPanel({ children, width = "70vw", onClose }) {
             session (connection, stream) ends gracefully. */}
         <div className="h-full overflow-y-auto">{isMounted ? children : null}</div>
       </div>
+
+      {/* Launcher (shown when the drawer is closed) */}
+      {!isOpen && <ToggleChatButton onClick={open} />}
     </div>
   );
 }

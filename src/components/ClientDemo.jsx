@@ -6,7 +6,6 @@ import { LoginScreen } from "./LoginScreen";
 import { SlidingPanel } from "./SlidingPanel";
 import { getConversationId } from "../lib/session";
 import { AppHost } from "./AppHost";
-import { UnoverseMark } from "./Logo";
 
 /**
  * One CHANNEL demo, selected by the URL path (`/sab`, `/bpp`). This is the SAB shell:
@@ -14,8 +13,8 @@ import { UnoverseMark } from "./Logo";
  * conversationId), and the sliding-panel chrome — then hands config to the surface-agnostic
  * AppHost, which streams the app's `ui://` resource into a sandboxed iframe (§6d).
  *
- * The route IS the launcher now: the drawer auto-opens on load and there's no toggle. When
- * the app asks to close (`unoverse:close`), we slide out and return to the landing page.
+ * The URL path picks the channel; the drawer itself starts CLOSED with a floating launcher
+ * (SlidingPanel), so the user opens the chat over the fake host page just like a real embed.
  */
 export function ClientDemo({ clientKey }) {
   const client = clients[clientKey];
@@ -102,26 +101,6 @@ export function ClientDemo({ clientKey }) {
   }
 
   return (
-    <>
-      <HomeLink />
-      <SlidingPanel width={panelWidth} onClose={() => (window.location.href = "/")}>
-        {content}
-      </SlidingPanel>
-    </>
-  );
-}
-
-// Small fixed pill (top-left) back to the Unoverse landing page — replaces the old client
-// switcher now that each channel is its own route.
-function HomeLink() {
-  return (
-    <a
-      href="/"
-      aria-label="Back to Unoverse"
-      className="fixed top-4 left-4 z-[10000] flex items-center gap-2 rounded-full border border-white/10 bg-black/70 py-1.5 pl-2.5 pr-3.5 text-sm font-medium lowercase text-white shadow-lg backdrop-blur transition-colors hover:bg-black/85"
-    >
-      <UnoverseMark size={18} />
-      unoverse
-    </a>
+    <SlidingPanel width={panelWidth}>{content}</SlidingPanel>
   );
 }
