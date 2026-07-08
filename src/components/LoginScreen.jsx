@@ -1,5 +1,5 @@
 /**
- * SAB login gate — the BRAND's login (auth is a channel/brand concern; the MCP app is
+ * Login gate — the BRAND's login (auth is a channel/brand concern; the MCP app is
  * auth-agnostic). Shown when the server requires auth and the user isn't signed in. Clicking
  * Sign In runs the host's OAuth redirect (Auth0); the resulting token is handed to the app.
  */
@@ -9,19 +9,24 @@ export function LoginScreen({ onLogin }) {
       <div className="flex flex-1 items-center justify-center p-6">
         <div className="w-full max-w-sm rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
           <div className="mb-6 flex justify-center">
-            <img
-              src="https://res.cloudinary.com/sonik/image/upload/v1764865338/SAB/sablogo.jpg"
-              alt="SAB"
-              className="h-12 w-auto"
-            />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900">
+              <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
           </div>
 
-          <h1 className="text-center text-xl font-semibold text-gray-900">SAB Smart Assistant</h1>
+          <h1 className="text-center text-xl font-semibold text-gray-900">Smart Assistant</h1>
           <p className="mb-8 mt-1 text-center text-sm text-gray-500">Sign in to continue</p>
 
           <button
             onClick={onLogin}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#db0011] py-3 font-medium text-white transition-colors hover:bg-[#b3000e]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 py-3 font-medium text-white transition-colors hover:bg-gray-800"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
