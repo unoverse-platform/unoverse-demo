@@ -2,10 +2,8 @@
   "name": "@gravity-platform/unoverse-demo",
   "version": "0.1.0",
   "type": "module",
-  "packageManager": "npm@10.2.0",
   "engines": {
-    "node": ">=20.15.0",
-    "npm": ">=10.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3007 --no-open",
