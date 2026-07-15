@@ -38,6 +38,16 @@ export const clients = {
     templateId: "BPPChatLayout",
     background: "https://res.cloudinary.com/sonik/image/upload/v1783256770/bppWeb_c9bila.png",
   },
+  yas: {
+    label: "Yas Island",
+    tagline: "Destination experiences channel",
+    templateId: "YASChatLayout",
+  },
+  emirates: {
+    label: "Emirates",
+    tagline: "Airline travel channel",
+    templateId: "EmiratesChatLayout",
+  },
 };
 
 /**

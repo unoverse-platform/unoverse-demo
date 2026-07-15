@@ -7,9 +7,10 @@ import { ClientDemo } from "./ClientDemo";
 
 /**
  * Top-level path router. The URL alone decides what mounts:
- *   `/`            → the Unoverse landing page (the hub)
- *   `/logout`      → full Auth0 SSO sign-out, then back to the login gate
- *   `/sab`, `/bpp` → that channel's live demo
+ *   `/`             → the Unoverse hub (login-gated; one card per demo channel)
+ *   `/logout`       → full Auth0 SSO sign-out, then back to the login gate
+ *   `/sab`, `/bpp`,
+ *   `/yas`, `/emirates` → that channel's live demo
  *
  * Navigation between them is a full page load, so this only ever mounts one branch per
  * session — no conditional hooks, and each channel boots a clean iframe. (The legacy

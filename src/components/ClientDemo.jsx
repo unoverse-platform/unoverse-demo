@@ -41,6 +41,7 @@ export function ClientDemo({ clientKey }) {
   // (index.html), outside this widget's tree, so we set its src directly; absent on a real
   // embed → guard. Fixed per route, so this runs once.
   useEffect(() => {
+    if (!client.background) return; // newer channels may not have a fake page yet
     const img = document.querySelector(".bg-container img");
     if (img) img.src = client.background;
   }, [client.background]);

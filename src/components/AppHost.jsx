@@ -76,7 +76,7 @@ export function AppHost({ serverUrl, apiUrl, templateId, token, userId, conversa
       ref={ref}
       srcDoc={html}
       onLoad={(e) => e.currentTarget.contentWindow?.postMessage({ type: "unoverse:config", config: appConfig }, "*")}
-      sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox"
       style={{ width: "100%", height: "100%", border: "none", display: "block" }}
     />
   );
