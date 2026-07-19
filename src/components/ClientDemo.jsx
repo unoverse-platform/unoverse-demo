@@ -67,7 +67,11 @@ export function ClientDemo({ clientKey }) {
   const conversationId = useMemo(() => getConversationId(), []);
   const userId = auth?.user?.profile?.sub;
 
+  // The app starts at ZERO width and grows to whatever it reports (`unoverse:size`) — the
+  // app's natural width is the only authority. The gate states (loading/login) never report
+  // one, so they get a fixed drawer width instead.
   let content;
+  let isApp = false;
   if (authRequired === null || (hasAuth && auth?.isLoading)) {
     content = (
       <div className="flex h-full items-center justify-center bg-[#0f141a] text-sm text-gray-400">Loading…</div>
@@ -85,6 +89,7 @@ export function ClientDemo({ clientKey }) {
       </div>
     );
   } else {
+    isApp = true;
     // SAB as HOST (§6d): stream the app (the server's ui:// resource) into a sandboxed iframe
     // and hand it config — the SAME contract Claude/ChatGPT use. The app opens its own
     // /mcp + /stream inside the iframe; this host embeds no Unoverse SDK at all.
@@ -102,6 +107,6 @@ export function ClientDemo({ clientKey }) {
   }
 
   return (
-    <SlidingPanel width={panelWidth}>{content}</SlidingPanel>
+    <SlidingPanel width={isApp ? panelWidth ?? "0px" : "420px"}>{content}</SlidingPanel>
   );
 }

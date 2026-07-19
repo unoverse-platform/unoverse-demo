@@ -11,34 +11,23 @@
  * identical on the stream session AND the tool call. Minting a fresh id per click/reload
  * (the earlier bug) means the reply never lands.
  */
-const CONVERSATION_KEY = "unoverse.conversationId";
-
 // Legacy id shape: `${prefix}_${Date.now()}_${rand}` (HistoryManager.generateId).
 const makeId = (prefix) => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 
 /**
- * The persistent conversation id — generated ONCE, cached in localStorage, reused across
- * reloads and across MCP apps until explicitly reset. Storage-blocked → ephemeral fallback.
+ * The conversation id — minted ONCE PER PAGE LOAD and held in memory. A browser
+ * refresh starts a fresh conversation (fresh agent thread, fresh durable surfaces);
+ * within the load, every MCP app, stream session and tool call shares this ONE id
+ * (the "reply never lands" bug was minting per click/turn — per-LOAD is safe).
  */
+let conversationId = makeId("conv");
+
 export function getConversationId() {
-  try {
-    let id = localStorage.getItem(CONVERSATION_KEY);
-    if (!id) {
-      id = makeId("conv");
-      localStorage.setItem(CONVERSATION_KEY, id);
-    }
-    return id;
-  } catch {
-    return makeId("conv");
-  }
+  return conversationId;
 }
 
-/** Start a fresh thread ("new conversation") — clears the cached id and returns a new one. */
+/** Start a fresh thread ("new conversation") mid-session — mints and returns a new id. */
 export function resetConversation() {
-  try {
-    localStorage.removeItem(CONVERSATION_KEY);
-  } catch {
-    /* ignore */
-  }
-  return getConversationId();
+  conversationId = makeId("conv");
+  return conversationId;
 }

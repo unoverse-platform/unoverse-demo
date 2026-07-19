@@ -2,13 +2,13 @@ import { useState, useEffect } from "preact/hooks";
 import { useWidget } from "../hooks/useWidget";
 import { ToggleChatButton } from "./ToggleChatButton";
 
-// Right-side chat drawer + floating launcher. Ported from legacy GravitySAB.
+// Left-side chat drawer + floating launcher. Ported from legacy GravitySAB.
 //
 // The drawer starts CLOSED over the static "fake" page — the floating launcher is the only
 // thing visible until the user opens it. When the drawer closes we wait for the slide-out
 // transition to finish, THEN unmount the children — so the Unoverse SDK tears down its
 // WebSocket/stream gracefully rather than mid-animation.
-export function SlidingPanel({ children, width = "70vw" }) {
+export function SlidingPanel({ children, width = "420px" }) {
   const { isOpen, open, close } = useWidget();
 
   const [isMounted, setIsMounted] = useState(isOpen);
@@ -37,8 +37,8 @@ export function SlidingPanel({ children, width = "70vw" }) {
     <div className="h-full">
       {/* Sliding panel */}
       <div
-        className={`fixed inset-y-0 right-0 bg-white shadow-2xl transform transition-all duration-300 ease-in-out z-[9999] ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed inset-y-0 left-0 bg-white shadow-2xl transform transition-all duration-300 ease-in-out z-[9999] ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ width }}
       >

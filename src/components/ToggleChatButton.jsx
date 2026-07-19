@@ -1,7 +1,9 @@
+import { UnoverseMark } from "./Logo";
+
 // Floating chat launcher — the only thing visible over the fake page until the
-// user opens the drawer. Ported from legacy GravitySAB; the lucide <Sparkles>
-// icon is inlined as SVG so we don't pull in lucide-react.
-export function ToggleChatButton({ onClick, position = "fixed bottom-7 right-8" }) {
+// user opens the drawer. Ported from legacy GravitySAB, rebranded with the
+// official Unoverse logomark.
+export function ToggleChatButton({ onClick, position = "fixed bottom-7 left-8" }) {
   return (
     <div className={`${position} z-[9999]`}>
       <div className="relative">
@@ -20,25 +22,13 @@ export function ToggleChatButton({ onClick, position = "fixed bottom-7 right-8" 
           "
           style={{ background: "linear-gradient(135deg, #d33131 0%, #b82a2a 100%)" }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            className="h-10 w-10 text-white transform group-hover:scale-110 transition-transform duration-300"
-          >
-            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z" />
-            <path d="M20 3v4" />
-            <path d="M22 5h-4" />
-            <path d="M4 17v2" />
-            <path d="M5 18H3" />
-          </svg>
+          <UnoverseMark
+            size={40}
+            className="transform group-hover:scale-110 transition-transform duration-300"
+          />
           <span
             className="
-              absolute right-full mr-4 bg-white px-3 py-2 rounded-lg
+              absolute left-full ml-4 bg-white px-3 py-2 rounded-lg
               text-base font-medium text-red-700 shadow-md
               opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap
             "

@@ -19,6 +19,10 @@ const CARD_ART = {
     accent: "52,211,153", // emerald
     image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80", // island shoreline
   },
+  yasvoice: {
+    accent: "251,191,36", // amber — the voice sibling
+    image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=900&q=80", // concert / live sound
+  },
   emirates: {
     accent: "248,113,113", // red
     image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=900&q=80", // wing above clouds

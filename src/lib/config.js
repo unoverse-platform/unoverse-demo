@@ -16,15 +16,14 @@ export const config = {
   get apiUrl() {
     return import.meta.env.VITE_API_URL || this.serverUrl;
   },
-  templateId: import.meta.env.VITE_TEMPLATE_ID || "SABChatLayout",
+  templateId: import.meta.env.VITE_TEMPLATE_ID || "sab/sabchatlayout",
 };
 
 // Demo client registry — each entry is one CHANNEL skin: which template the app loads
 // and which "fake page" screenshot sits behind the drawer. Each client is its own PATH
 // route (`/sab`, `/bpp`) so the URL alone opens that channel's chat — no launcher, no
-// query param. The Unoverse landing page (`/`) links out to each. Template ids resolve
-// case-insensitively across orgs on the server, so a bare name like "BPPChatLayout"
-// finds `bpp/bppchatlayout`.
+// query param. The Unoverse landing page (`/`) links out to each. Template ids MUST be
+// fully org-qualified (`<org>/<name>`, e.g. `bpp/bppchatlayout`) — bare names are not relied on.
 export const clients = {
   sab: {
     label: "SAB",
@@ -35,18 +34,25 @@ export const clients = {
   bpp: {
     label: "BPP",
     tagline: "Enterprise portal channel",
-    templateId: "BPPChatLayout",
+    templateId: "bpp/bppchatlayout",
     background: "https://res.cloudinary.com/sonik/image/upload/v1783256770/bppWeb_c9bila.png",
   },
   yas: {
     label: "Yas Island",
     tagline: "Destination experiences channel",
-    templateId: "YASChatLayout",
+    templateId: "yasisland/yasislandchatlayout",
+    background: "https://res.cloudinary.com/sonik/image/upload/v1784377715/yasIsland/yasHome.jpg",
+  },
+  yasvoice: {
+    label: "Yas Island Voice",
+    tagline: "Voice concierge channel",
+    templateId: "yasisland/yasislandvoicelayout",
+    background: "https://res.cloudinary.com/sonik/image/upload/v1784377715/yasIsland/yasHome.jpg",
   },
   emirates: {
     label: "Emirates",
     tagline: "Airline travel channel",
-    templateId: "EmiratesChatLayout",
+    templateId: "emirates/emirateschatlayout",
   },
 };
 
